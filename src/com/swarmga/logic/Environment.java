@@ -181,7 +181,6 @@ public class Environment
                         this.update();
                     }
                     
-                    
                 }
                 if (Input.GetKey(Input.KEY_ESCAPE))
                     {
