@@ -57,10 +57,8 @@ public class Environment
         this.display = new SimulationDisplay();
         this.timeUntilNextBattle = 3.0;
     }
-    /**
+    /*
      * Start Environment simulator
-     *
-     * @param
      */
     public Team start()
     {
@@ -70,8 +68,6 @@ public class Environment
     }
     /**
      * Add initial agents to Environment
-     *
-     * @param
      */ 
     private void addInitAgents()
     {
@@ -102,8 +98,6 @@ public class Environment
     }
     /**
      * Update Environment
-     *
-     * @param
      */ 
     public void update() //MAIN UPDATE FUNCTION
     {
@@ -123,8 +117,6 @@ public class Environment
     }
     /**
      * Update all agents in Environment
-     *
-     * @param
      */ 
     private void agentUpdate()
     {
@@ -135,8 +127,6 @@ public class Environment
     }
     /**
      * Main loop for updates with timing and input
-     *
-     * @param
      */ 
     private void mainLoop()
     {
@@ -182,6 +172,7 @@ public class Environment
                     }
                     
                 }
+                //every loop
                 if (Input.GetKey(Input.KEY_ESCAPE))
                     {
                         this.display.destroy();
@@ -198,6 +189,7 @@ public class Environment
                     }
                 Input.Update(); // update input
             }
+            //if time run down is over, stop loop
             if (this.timeUntilNextBattle < 0)
             {
                 this.display.destroy();
@@ -205,7 +197,9 @@ public class Environment
             }
         }
     }
-
+    /**
+     * For all agents, find their closest agents, add to their list
+     */ 
     private void findCloseAgenets()
     {
         Collections.shuffle(agents);
@@ -224,7 +218,10 @@ public class Environment
             }
         }
     }
-
+    
+    /**
+     * For all agents, find their closest foods, add to their list
+     */ 
     private void findCloseFoods()
     {
         for (Agent agent : agents)
@@ -239,7 +236,12 @@ public class Environment
             }
         }
     }
-
+    
+    /**
+     * Update all altered entity stats, from the affected field in Agents
+     *
+     * @param
+     */ 
     private void interactionUpdate()
     {
         for (Agent agent : agents)
@@ -281,7 +283,12 @@ public class Environment
         }
         alteredFood = new ArrayList<>();
     }
-
+    
+    /**
+     * Add teams to environment from passed seeds list
+     *
+     * @param seeds
+     */ 
     private void addTeams(ArrayList<AttributeSeed> seeds)
     {
         //take in seeds from setup
@@ -306,7 +313,10 @@ public class Environment
             }
         }
     }
-
+    
+    /**
+     * Initialise spawns and team colours
+     */
     private void initData()
     {
         this.spawns.add(0, new Location(25, 25));
@@ -318,7 +328,10 @@ public class Environment
         this.colours.add(2, new Colour(0.0f, 0.0f, 1.0f));
         this.colours.add(3, new Colour(1.0f, 0.0f, 1.0f));
     }
-
+    
+    /**
+     * Add initial food to the environment
+     */
     private void addInitFood()
     {
         for (int i = 0; i < 10; i++)
@@ -329,6 +342,11 @@ public class Environment
         }
     }
 
+    /**
+     * Add a point to the team passed
+     *
+     * @param team
+     */
     private void addPoint(String team)
     {
         for (Team t : teams)
@@ -341,6 +359,11 @@ public class Environment
         }
     }
 
+    /**
+     * Add a new agent to the environment from the agent passed
+     *
+     * @param agent
+     */
     private Agent breedNewAgentFrom(Agent agent)
     {
         for (Team team : teams)
@@ -364,7 +387,11 @@ public class Environment
         }
         return null;
     }
-
+    
+    /**
+     * For all agents check if fertile and breed if able to, 
+     * Add new agents to environment
+     */
     private void breed()
     {
         ArrayList<Agent> newAgents = new ArrayList<>();
@@ -373,6 +400,7 @@ public class Environment
             //breed or regen
             if (agent.isBreedable() == true)
             {
+                //only breed new if health is more than half
                 if (agent.getHealth() > agent.getMaxHealth() / 2)
                 {
                     Agent newAgent = breedNewAgentFrom(agent);
@@ -394,6 +422,9 @@ public class Environment
         }
     }
 
+    /**
+     * Remove dead agent from environment
+     */
     private void removeDeadAgents()
     {
         ArrayList<Agent> unDeadAgents = new ArrayList<>();
@@ -416,6 +447,9 @@ public class Environment
         }
     }
 
+    /**
+     * Check if end of simulation, return winning team or return null
+     */
     private Team isEnd()
     {
         int liveTeams = 0;
@@ -435,11 +469,19 @@ public class Environment
         return null;
     }
 
+    /**
+     * Set the running state of the simulation
+     *
+     * @param running
+     */
     public void setRunning(boolean running)
     {
         this.running = running;
     }
 
+    /**
+     * Return environment as a string
+     */
     @Override
     public String toString()
     {
@@ -452,6 +494,10 @@ public class Environment
         return sb.toString();
     }
 
+    /**
+     * Return ArrayList of String for use in the GUI
+     * 
+     */
     private ArrayList<String> toGuiString()
     {
         ArrayList<String> string = new ArrayList<>();

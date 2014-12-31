@@ -127,7 +127,7 @@ public class Util
                 }
             } else
             {
-                return 1;
+                return 0.5;
             }
         } else if (defAgility == attAgility)
         {
@@ -139,7 +139,7 @@ public class Util
                 return ((defense - attack) * 0.5) + 0.5;
             } else
             {
-                return 1 + 0.5;
+                return 0.5 + 0.5;
             }
         } else if (defAgility > attAgility)
         {

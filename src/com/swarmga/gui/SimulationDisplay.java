@@ -35,6 +35,11 @@ public class SimulationDisplay
     private ArrayList<Agent> dead;
     private double timeUntilNextBattle = 3;
     
+    /**
+     * Construct Simulation display
+     *
+     * @param 
+     */
     public SimulationDisplay()
     {
         try
@@ -45,25 +50,34 @@ public class SimulationDisplay
             Display.setTitle("Simulation: SwarmGA 0.1");
         } catch (LWJGLException e)
         {
-            e.printStackTrace();
-            System.exit(0);
+            System.exit(1);
         }
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        //glOrtho(0, SwarmGA.WIDTH + 300, 0, SwarmGA.HEGIHT, 1, -1);
         glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 1, -1);
         glMatrixMode(GL_MODELVIEW);
         glDisable(GL_DEPTH_TEST);
-        init();
+        fontInit();
     }
 
+    /**
+     * Destroy display
+     *
+     * @param 
+     */
     public void destroy()
     {
         Display.destroy();
     }
 
-    public void draw(Entity entity, int size)
+    /**
+     * Draw all entities on screen
+     *
+     * @param entity
+     * @param size
+     */
+    private void draw(Entity entity, int size)
     {
         glColor3f(entity.getColour().getR(),
                 entity.getColour().getG(),
@@ -78,6 +92,11 @@ public class SimulationDisplay
         glEnd();
     }
 
+    /**
+     * Add a thin line for the GUI divider
+     *
+     * @param 
+     */
     private void gui()
     {
         glColor3f(1.0f, 1.0f, 1.0f);
@@ -92,6 +111,16 @@ public class SimulationDisplay
         renderText(); // text
     }
 
+    /**
+     * Draw all entities and pass extra data
+     *
+     * @param agents
+     * @param foods
+     * @param dead
+     * @param data
+     * @param winner
+     * @param timeUntilNextBattle
+     */
     public void draw(ArrayList<Agent> agents, ArrayList<Entity> foods, 
                      ArrayList<Agent> dead, ArrayList<String> data, Team winner, 
                      double timeUntilNextBattle)
@@ -129,7 +158,12 @@ public class SimulationDisplay
         }
     }
 
-    public void init()
+    /**
+     * Initialise fonts
+     *
+     * @param 
+     */
+    public void fontInit()
     {
         // load a default java font
         Font awtFont = new Font("Times New Roman", Font.BOLD, 18);
@@ -140,6 +174,11 @@ public class SimulationDisplay
         win = new TrueTypeFont(awtFontThree, true);
     }
 
+    /**
+     * Render all text on screen
+     *
+     * @param 
+     */
     public void renderText()
     {
         glEnable(GL_TEXTURE_2D);
