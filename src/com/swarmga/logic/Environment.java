@@ -17,7 +17,9 @@ import java.util.Collections;
  */
 public class Environment
 {
-    private final double DEBOUNCE = 0.02;
+
+    private boolean gridLock = false;
+    private int population;
     //Teams
     private final ArrayList<Team> teams = new ArrayList<>();
     //ID's
@@ -39,13 +41,14 @@ public class Environment
     private boolean running;
     private boolean pause;
     private double timeUntilNextBattle;
-    
+
     /**
      * Construct Environment with four teams from seeds
      *
-     * @param ArrayList<AttributeSeed> seeds
+     * @param seeds
+     * @param title
      */
-    public Environment(ArrayList<AttributeSeed> seeds)
+    public Environment(ArrayList<AttributeSeed> seeds, String title)
     {
         //add default spawns
         initData();
@@ -54,21 +57,29 @@ public class Environment
         addInitFood();
         this.running = true;
         this.pause = false;
-        this.display = new SimulationDisplay();
+        this.display = new SimulationDisplay(title);
         this.timeUntilNextBattle = 3.0;
+        this.population = 0;
     }
     /*
      * Start Environment simulator
      */
+
     public Team start()
     {
         this.mainLoop();
         this.display.destroy();
+        if (gridLock)
+        {
+            Environment environment = new Environment(Util.LiveTeamsToSeeds(teams), "fe");
+            return environment.start();
+        }
         return isEnd();
     }
+
     /**
      * Add initial agents to Environment
-     */ 
+     */
     private void addInitAgents()
     {
         // add new agents to team
@@ -77,6 +88,7 @@ public class Environment
             for (int i = 0; i < 50; i++)
             {
                 team.addAgent(new Agent(agentID.getId(), team.getSeed(), team.getColour()));
+                this.population++;
             }
         }
         // add agents to agent list
@@ -96,13 +108,15 @@ public class Environment
             }
         }
     }
+
     /**
      * Update Environment
-     */ 
+     */
     public void update() //MAIN UPDATE FUNCTION
     {
         this.findCloseAgenets();
         this.findCloseFoods();
+        this.gridLock = this.isGridlock();
 
         if (this.isEnd() == null)
         {
@@ -115,9 +129,10 @@ public class Environment
         display.draw(agents, foods, deadAgents, this.toGuiString(),
                 this.isEnd(), Util.round(timeUntilNextBattle, 2));
     }
+
     /**
      * Update all agents in Environment
-     */ 
+     */
     private void agentUpdate()
     {
         for (Agent agent : agents)
@@ -125,9 +140,10 @@ public class Environment
             agent.update();
         }
     }
+
     /**
      * Main loop for updates with timing and input
-     */ 
+     */
     private void mainLoop()
     {
         while (running)
@@ -138,7 +154,7 @@ public class Environment
             double lastTime = Time.getTime();
             double unprocessedTime = 0;
             int frames = 0;
-            
+
             while (running)
             {
                 double startTime = Time.getTime();
@@ -146,10 +162,10 @@ public class Environment
                 lastTime = startTime;
                 unprocessedTime += passedTime;
                 frameCounter += passedTime;
-                
+
                 while (unprocessedTime > frameTime)
                 {
-                    
+
                     unprocessedTime -= frameTime;
                     if (this.isEnd() != null)
                     {
@@ -159,6 +175,11 @@ public class Environment
                             this.running = false;
                         }
                     }
+
+                    if (this.gridLock)
+                    {
+                        this.running = false;
+                    }
                     if (frameCounter >= 1.0)
                     {
                         //every second
@@ -166,40 +187,41 @@ public class Environment
                         frameCounter = 0;
                     }
                     frames++; //**Every 10th Second**
-                    
-                    if(!pause){
+
+                    if (!pause)
+                    {
                         this.update();
                     }
-                    
+
                 }
                 //every loop
                 if (Input.GetKey(Input.KEY_ESCAPE))
-                    {
-                        this.display.destroy();
-                    }
-                    
-                    if (Input.GetKey(Input.KEY_SPACE))
-                    {
-                        this.pause = false;
-                    }
-                    if (Input.GetKey(Input.KEY_RETURN))
-                    {
-                        this.pause = true;
-                        System.out.println("unpause");
-                    }
+                {
+                    this.display.destroy();
+                }
+
+                if (Input.GetKey(Input.KEY_SPACE))
+                {
+                    this.pause = false;
+                }
+                if (Input.GetKey(Input.KEY_RETURN))
+                {
+                    this.pause = true;
+                    System.out.println("unpause");
+                }
                 Input.Update(); // update input
             }
             //if time run down is over, stop loop
             if (this.timeUntilNextBattle < 0)
             {
-                this.display.destroy();
                 break;
             }
         }
     }
+
     /**
      * For all agents, find their closest agents, add to their list
-     */ 
+     */
     private void findCloseAgenets()
     {
         Collections.shuffle(agents);
@@ -218,10 +240,10 @@ public class Environment
             }
         }
     }
-    
+
     /**
      * For all agents, find their closest foods, add to their list
-     */ 
+     */
     private void findCloseFoods()
     {
         for (Agent agent : agents)
@@ -236,12 +258,12 @@ public class Environment
             }
         }
     }
-    
+
     /**
      * Update all altered entity stats, from the affected field in Agents
      *
      * @param
-     */ 
+     */
     private void interactionUpdate()
     {
         for (Agent agent : agents)
@@ -283,12 +305,12 @@ public class Environment
         }
         alteredFood = new ArrayList<>();
     }
-    
+
     /**
      * Add teams to environment from passed seeds list
      *
      * @param seeds
-     */ 
+     */
     private void addTeams(ArrayList<AttributeSeed> seeds)
     {
         //take in seeds from setup
@@ -313,7 +335,7 @@ public class Environment
             }
         }
     }
-    
+
     /**
      * Initialise spawns and team colours
      */
@@ -328,7 +350,7 @@ public class Environment
         this.colours.add(2, new Colour(0.0f, 0.0f, 1.0f));
         this.colours.add(3, new Colour(1.0f, 0.0f, 1.0f));
     }
-    
+
     /**
      * Add initial food to the environment
      */
@@ -363,6 +385,7 @@ public class Environment
      * Add a new agent to the environment from the agent passed
      *
      * @param agent
+     * @return new agent
      */
     private Agent breedNewAgentFrom(Agent agent)
     {
@@ -374,9 +397,10 @@ public class Environment
                 newAgent.setX(((int) (Math.random() * 10) - 5) + agent.getX());
                 newAgent.setY(((int) (Math.random() * 10) - 5) + agent.getY());
                 newAgent.setHealth(agent.getMaxHealth());
-                if (Math.random() < 0.15)
+                if (Math.random() < 0.15) // random chance of misbreed
                 {
                     team.addAgent(newAgent);
+                    this.population++;
                     return newAgent;
                 } else
                 {
@@ -387,10 +411,10 @@ public class Environment
         }
         return null;
     }
-    
+
     /**
-     * For all agents check if fertile and breed if able to, 
-     * Add new agents to environment
+     * For all agents check if fertile and breed if able to, Add new agents to
+     * environment
      */
     private void breed()
     {
@@ -412,10 +436,10 @@ public class Environment
                 {
                     agent.setHealth(agent.getMaxHealth());
                 }
-                agent.breed();
-
+                agent.breed(); // tell agent it has breeded
             }
         }
+        //add new agents to list
         for (Agent agent : newAgents)
         {
             this.agents.add(agent);
@@ -470,6 +494,24 @@ public class Environment
     }
 
     /**
+     * Returns true if Environment is at a state of lag
+     */
+    private boolean isGridlock()
+    {
+        int totalPopulation = 0;
+        int liveTeams = 0;
+        for (Team team : teams)
+        {
+            totalPopulation += team.getPopulation();
+            if (team.getPopulation() > 0)
+            {
+                liveTeams++;
+            }
+        }
+        return liveTeams == 2 && totalPopulation > 100;
+    }
+
+    /**
      * Set the running state of the simulation
      *
      * @param running
@@ -481,6 +523,8 @@ public class Environment
 
     /**
      * Return environment as a string
+     *
+     * @return String of teams
      */
     @Override
     public String toString()
@@ -496,7 +540,8 @@ public class Environment
 
     /**
      * Return ArrayList of String for use in the GUI
-     * 
+     *
+     * @param
      */
     private ArrayList<String> toGuiString()
     {
@@ -505,13 +550,16 @@ public class Environment
         {
             string.add(team.overviewString());
             string.add("Colour:   " + team.getColourString());
-            string.add("Health:   " + (team.getSeed().getMaxHealth()+1)*10);
-            string.add("Attack:   " + (team.getSeed().getAttack()+1));
-            string.add("Defence:  " + (team.getSeed().getDefense()+1));
-            string.add("Agility:  " + (team.getSeed().getAgility()+2));
-            string.add("Fertility: " + (team.getSeed().getFertility()+1));
+            string.add("Health:   " + (team.getSeed().getMaxHealth() + 1) * 10);
+            string.add("Attack:   " + (team.getSeed().getAttack() + 1));
+            string.add("Defence:  " + (team.getSeed().getDefense() + 1));
+            string.add("Agility:  " + (team.getSeed().getAgility() + 2));
+            string.add("Fertility: " + (team.getSeed().getFertility() + 1));
             string.add("");
         }
+        string.add(this.gridLock + "");
+        string.add(this.population + "");
         return string;
     }
+
 }
