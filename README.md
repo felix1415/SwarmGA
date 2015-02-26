@@ -21,3 +21,6 @@ If 2 teams remain in the ring with a population over 400, a 'face-off' is trigge
 
   
 You can create '16 team competitions' that has 4 rounds of 4 teams, and a final round of each of the 4 winners from the 4 previous rounds.
+
+
+![Alt text](http://i.imgur.com/ZzYdlRF.png "Round")
