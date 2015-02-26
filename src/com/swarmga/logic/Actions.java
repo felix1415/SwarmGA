@@ -6,13 +6,11 @@
 package com.swarmga.logic;
 
 import com.swarmga.structures.Agent;
-import com.swarmga.structures.Entity;
-import com.swarmga.structures.Location;
 import com.swarmga.utilities.Util;
 import java.util.ArrayList;
 
 /**
- *
+ * UNUSED CLASS FOR POSSIBLE FUTURE DEVELOPMENT
  * @author alexgray
  */
 public class Actions

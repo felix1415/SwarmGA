@@ -20,6 +20,7 @@ public class Environment
 
     private boolean gridLock = false;
     private int population;
+    private boolean gridLockBattle;
     //Teams
     private final ArrayList<Team> teams = new ArrayList<>();
     //ID's
@@ -50,16 +51,28 @@ public class Environment
      */
     public Environment(ArrayList<AttributeSeed> seeds, String title)
     {
-        //add default spawns
-        initData();
-        addTeams(seeds);
-        addInitAgents();
-        addInitFood();
+        this.gridLockBattle = false;
+        this.population = 0;
         this.running = true;
         this.pause = false;
         this.display = new SimulationDisplay(title);
         this.timeUntilNextBattle = 3.0;
-        this.population = 0;
+        //add default spawns
+        if(seeds.size() == 4){ // init four way
+            initData();
+            addTeams(seeds);
+            addInitAgents();
+            addInitFood();
+        } else if (seeds.size() == 2){ // init GridLock Battle
+            gridLockBattle = true;
+            this.spawns.add(0, new Location(25, 350));
+            this.spawns.add(1, new Location(975, 350));
+            this.colours.add(0, new Colour(1.0f, 0.0f, 0.0f));
+            this.colours.add(1, new Colour(0.0f, 0.0f, 1.0f));
+            addTeams(seeds);
+            initGridLockBattle();
+        }
+        
     }
     /*
      * Start Environment simulator
@@ -88,7 +101,6 @@ public class Environment
             for (int i = 0; i < 50; i++)
             {
                 team.addAgent(new Agent(agentID.getId(), team.getSeed(), team.getColour()));
-                this.population++;
             }
         }
         // add agents to agent list
@@ -97,6 +109,7 @@ public class Environment
             for (Agent agent : team.getAgents())
             {
                 this.agents.add(agent);
+                this.population++;
                 agent.setX(((int) (Math.random() * 20) - 10) + team.getX());
                 agent.setY(((int) (Math.random() * 20) - 10) + team.getY());
                 if (team.getAgents().indexOf(agent) % 5 == 0)
@@ -317,6 +330,7 @@ public class Environment
         for (AttributeSeed seed : seeds)
         {
             int id = teamID.getId();
+            // if no name, give one based on Team ID
             if (seed.getTeamName().equals("To Be Assigned"))
             {
                 seed.setTeamName(Integer.toString(id));
@@ -397,7 +411,7 @@ public class Environment
                 newAgent.setX(((int) (Math.random() * 10) - 5) + agent.getX());
                 newAgent.setY(((int) (Math.random() * 10) - 5) + agent.getY());
                 newAgent.setHealth(agent.getMaxHealth());
-                if (Math.random() < 0.15) // random chance of misbreed
+                if (Math.random() < 0.15) // random chance of no breed
                 {
                     team.addAgent(newAgent);
                     this.population++;
@@ -498,17 +512,15 @@ public class Environment
      */
     private boolean isGridlock()
     {
-        int totalPopulation = 0;
         int liveTeams = 0;
         for (Team team : teams)
         {
-            totalPopulation += team.getPopulation();
             if (team.getPopulation() > 0)
             {
                 liveTeams++;
             }
         }
-        return liveTeams == 2 && totalPopulation > 100;
+        return liveTeams == 2 && this.population > 350;
     }
 
     /**
@@ -561,5 +573,36 @@ public class Environment
         string.add(this.population + "");
         return string;
     }
+
+    private void initGridLockBattle()
+    {
+        for (Team team : teams)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                team.addAgent(new Agent(agentID.getId(), team.getSeed(), team.getColour()));
+                this.population++;
+            }
+        }
+        System.out.println("   ");
+        for (Team team : teams)
+        {
+            for (Agent agent : team.getAgents())
+            {
+                this.agents.add(agent);
+                agent.setX(team.getX());
+                agent.setY((int) (Math.random() * 700));
+                agent.setHealth(agent.getMaxHealth());
+                if(team.getX() > 500){
+                    agent.setGoalLocation(new Location(25, agent.getY()));
+                }else{
+                    agent.setGoalLocation(new Location(975, agent.getY()));
+                }
+            }
+            System.out.println(team.getY());
+            }
+        System.out.println("__________________");
+        }
+    
 
 }

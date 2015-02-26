@@ -19,19 +19,30 @@ public class AttributeSeed
     private final int fertility;
     private int seedId;
     private int[] values = new int[5];
-    
     private String teamName;
 
+    /**
+     * Get the seeds team name
+     * @return teamName
+     */
     public String getTeamName()
     {
         return teamName;
     }
 
+    /**
+     * Set the seeds team name
+     *@param teamName
+     */
     public void setTeamName(String teamName)
     {
         this.teamName = teamName;
     }
     
+    /**
+     * Construct a random seed
+     *
+     */
     public AttributeSeed()
     {
         generateValues();
@@ -42,6 +53,10 @@ public class AttributeSeed
         this.fertility = values[4];
     }
     
+    /**
+     * Construct a seed from values
+     *
+     */
     public AttributeSeed(int mHP, int att, int def, int agl, int fer)
     {
         this.maxHealth = mHP;
@@ -50,22 +65,40 @@ public class AttributeSeed
         this.agility = agl;
         this.fertility = fer;
     }
-
+    
+    /**
+     * Return the seed ID
+     *
+     * @return seedId
+     */
     public int getSeedId()
     {
         return seedId;
     }
-
+    
+    /**
+     * Set the seed ID
+     *
+     * @param seedId
+     */
     public void setSeedId(int seedId)
     {
         this.seedId = seedId;
     }
 
+    /**
+     * Return this seed
+     * @return this
+     */
     public AttributeSeed getSeed()
     {
         return this;
     }
 
+    /**
+     * Randomly generate values for the seed
+     *
+     */
     private void generateValues()
     {
         int sum = 0;
@@ -83,7 +116,11 @@ public class AttributeSeed
 
         }
     }
-
+    
+    /**
+     * Get the sum of all the values for attributes
+     * @return value
+     */
     private int sumOfValues()
     {
         int value = 0;
@@ -144,6 +181,10 @@ public class AttributeSeed
         return "" +fertility;
     }
 
+    /**
+     * Returns a string of an AttributeSeed
+     * @return toString
+     */
     @Override
     public String toString()
     {

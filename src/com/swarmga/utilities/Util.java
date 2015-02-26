@@ -6,9 +6,11 @@
 package com.swarmga.utilities;
 
 import com.swarmga.structures.Agent;
+import com.swarmga.structures.AttributeSeed;
 import com.swarmga.structures.Colour;
 import com.swarmga.structures.Entity;
 import com.swarmga.structures.Location;
+import com.swarmga.structures.Team;
 import static java.lang.Math.pow;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -248,6 +250,18 @@ public class Util
         value = value * factor;
         long tmp = Math.round(value);
         return (double) tmp / factor;
+    }
+    
+    public static ArrayList<AttributeSeed> LiveTeamsToSeeds(ArrayList<Team> teams){
+        ArrayList<AttributeSeed> seeds = new ArrayList<>();
+        for (Team team : teams)
+        {
+            if (team.getPopulation() > 0)
+            {
+                seeds.add(team.getSeed());
+            }
+        }
+        return seeds;
     }
 
     public static String colourToString(Colour colour)

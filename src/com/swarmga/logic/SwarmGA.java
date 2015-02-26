@@ -6,8 +6,6 @@
 package com.swarmga.logic;
 
 import com.swarmga.gui.Setup;
-import com.swarmga.structures.Colour;
-import com.swarmga.utilities.Util;
 
 /**
  *
@@ -28,7 +26,6 @@ public class SwarmGA
     public SwarmGA()
     {
         new Setup().setVisible(true); //start setup
-        //goalMove(523, 408);
     }
 
 }

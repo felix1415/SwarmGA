@@ -12,22 +12,22 @@ package com.swarmga.structures;
 public class Colour
 {
 
-    private float r;
-    private float g;
-    private float b;
+    private final float r;
+    private final float g;
+    private final float b;
 
+    /**
+     * Construct a colour
+     * @param r - red
+     * @param g - green
+     * @param b - blue
+     *
+     */
     public Colour(float r, float g, float b)
     {
         this.r = r;
         this.g = g;
         this.b = b;
-    }
-    
-    public Colour()
-    {
-        this.r = 1.0f;
-        this.g = 1.0f;
-        this.b = 1.0f;
     }
     
     public float getB()

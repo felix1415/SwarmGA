@@ -17,6 +17,12 @@ import java.util.ArrayList;
 public class Competition
 {
 
+    /**
+     * Construct a competition from Attribute seeds and the setup display
+     * @param seeds
+     * @param setup
+     *
+     */
     public Competition(ArrayList<AttributeSeed> seeds, Setup setup) //single
     {
         setup.dispose(); // kill setup window
@@ -31,13 +37,25 @@ public class Competition
         }
     }
     
+    /**
+     * Return the winner of a four way battle
+     * @param seeds
+     * @return winner
+     *
+     */
     private Team fourTeams(ArrayList<AttributeSeed> seeds){
-        Environment env = new Environment(seeds);
+        Environment env = new Environment(seeds, "Four Team Battle");
         return env.start();
     }
     
+    /**
+     * Return the winner of a 16 way battle
+     * @param seeds
+     * @return winner
+     *
+     */
     private Team sixtenTeams(ArrayList<AttributeSeed> seeds){
-        ArrayList<AttributeSeed> seed = new ArrayList<>();
+        ArrayList<AttributeSeed> seed = new ArrayList<>(); // possibly redundant?
         ArrayList<SeedSet> sets = new ArrayList<>();
         int num = 0;
         sets.add(0, new SeedSet());
@@ -55,13 +73,21 @@ public class Competition
         seeds = new ArrayList<>();
         for (SeedSet set : sets)
         {
-            Environment enviroment = new Environment(set.getSelf());
+            int heatNum = sets.indexOf(set) + 1;
+            Environment enviroment = new Environment(set.getSelf(), "Round "+heatNum + " Battle");
             
             seeds.add(enviroment.start().getSeed());
         }
         return fourTeams(seeds);
     }
     
+    /**
+     * Return the winner of a 64 way battle
+     * @param seeds
+     * @return winner
+     * @exception NOT WRITTEN
+     *
+     */
     private Team sixtyFourTeams(){
         return null;
     }

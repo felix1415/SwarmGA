@@ -28,26 +28,28 @@ public class SimulationDisplay
     private TrueTypeFont font;
     private TrueTypeFont title;
     private TrueTypeFont win;
+    private String titleString;
     private Team winner;
     private ArrayList<String> data;
     private ArrayList<Agent> agents;
     private ArrayList<Entity> foods;
     private ArrayList<Agent> dead;
-    private double timeUntilNextBattle = 3;
+    private double timeUntilNextBattle = 3.0;
     
     /**
      * Construct Simulation display
      *
      * @param 
      */
-    public SimulationDisplay()
+    public SimulationDisplay(String title)
     {
+        this.titleString = title;
         try
         {
             Display.setDisplayMode(new DisplayMode(SwarmGA.WIDTH + 300, SwarmGA.HEGIHT));
             Display.setLocation(0, 0);
             Display.create();
-            Display.setTitle("Simulation: SwarmGA 0.1");
+            Display.setTitle("Simulation: SwarmGA 0.1 ::  " + title);
         } catch (LWJGLException e)
         {
             System.exit(1);
@@ -184,13 +186,14 @@ public class SimulationDisplay
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //draw winner text on screen
         if(winner != null){
             win.drawString(375, 375, "Winner is " + this.winner.getTeam() + "/" +
                                                     this.winner.getColourString(), Color.yellow);
             win.drawString(375, 200, "Next battle in: " +
                                         this.timeUntilNextBattle, Color.yellow);
         }
-            
+        //display agent seeds on screen from enviroment    
         int lineVal = 50;
         int lineNum = 0;
         for (String string : this.data)
@@ -199,7 +202,7 @@ public class SimulationDisplay
             lineNum++;
             lineVal += 15;
         }
-        title.drawString(1050, 20, "Swarm Genetic Algorithm", Color.white);
+        title.drawString(1050, 20, this.titleString, Color.white);
         glDisable(GL_TEXTURE_2D);
     }
 

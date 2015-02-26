@@ -31,6 +31,16 @@ public class Agent extends AgentStatus
     private Entity affectedFood;
     private Agent attacker;
 
+    /**
+     * Construct an Agent from values
+     *
+     * @param id
+     * @param maxHealth
+     * @param attack
+     * @param defense
+     * @param agility
+     * @param fertility
+     */
     public Agent(int id, int maxHealth, int attack, int defense, int agility, int fertility)
     {
         super(0, 0, maxHealth + 1, agility + 1, fertility + 1);
@@ -45,6 +55,13 @@ public class Agent extends AgentStatus
         setGoalLocation(Util.randomLocation());
     }
 
+    /**
+     * Construct an Agent from AttributeSeed and team colour
+     *
+     * @param id
+     * @param aSeed
+     * @param colour
+     */
     public Agent(int id, AttributeSeed aSeed, Colour colour)
     {
         super(0, 0, aSeed.getMaxHealth() + 1,
@@ -62,6 +79,10 @@ public class Agent extends AgentStatus
         setGoalLocation(Util.randomLocation());
     }
 
+    /**
+     * update the agents movement, reproduction and attack
+     *
+     */
     public void update()
     {
         this.decTimeUntilBreedable();
@@ -127,42 +148,68 @@ public class Agent extends AgentStatus
                 move(getGoalLocation());
                 break;
         }
-    
-        
-            
+
     }
 
+    /**
+     * Clear the affected agent and food source from this agent
+     *
+     */
     public void clearAffected()
     {
         affectedAgent = null;
         affectedFood = null;
     }
 
+    /**
+     * Get the agent affected by this agent
+     *
+     */
     public Agent getAffectedAgent()
     {
         return affectedAgent;
     }
 
+    /**
+     * Clear the affected food from this agent
+     *
+     */
     public Entity getAffectedFood()
     {
         return affectedFood;
     }
 
+    /**
+     * Get the attack of this agent
+     *
+     */
     public Agent getAttacker()
     {
         return attacker;
     }
 
+    /**
+     * Set the attack of this agent
+     *
+     */
     public void setAttacker(Agent attacker)
     {
         this.attacker = attacker;
     }
 
+    /**
+     * Check this agent is valid
+     *
+     */
     private boolean isValid()
     {
         return maxHealth + attack + defense + agility + fertility == 21;
     }
 
+    /**
+     * Get the sum of all attributes of this agent
+     *
+     */
     private int sum()
     {
         return maxHealth + attack + defense + agility + fertility;
@@ -218,11 +265,19 @@ public class Agent extends AgentStatus
         return agility;
     }
 
+    /**
+     * Get the toString of the agents location
+     *
+     */
     public String lite()
     {
         return "x:" + this.x + "y:" + this.y;
     }
 
+    /**
+     * Verbose toString for agent
+     *
+     */
     @Override
     public String toString()
     {
@@ -238,7 +293,7 @@ public class Agent extends AgentStatus
                 + "  " + defense + "  " + agility
                 + "  " + fertility + "  id:" + id
                 + super.toString() + "T:" + this.getTeam()
-                +" | AGENT:"
+                + " | AGENT:"
                 + affectedAgent.lite() + " FOOD:"
                 + affectedFood.toString()
                 + "State: " + state + " R'Goals: ("

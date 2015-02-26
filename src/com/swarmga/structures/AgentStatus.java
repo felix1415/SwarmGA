@@ -56,6 +56,7 @@ public class AgentStatus extends Location
     }
     
     public void setGoalLocation(Location l){
+        System.out.println(l.getX() + " " + l.getY() + "   " + this.getGoalX() + "," + this.getGoalY());
         this.setGoalX(l.getX());
         this.setGoalY(l.getY());
     }
@@ -128,7 +129,6 @@ public class AgentStatus extends Location
     {
         this.goalY = goalY;
     }
-
 
     public int getGoalX()
     {
